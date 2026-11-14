@@ -2,13 +2,13 @@
 
 Living gap list. TradingView is the reference for charting through brokers. FX Replay is the reference for replay UX.
 
-Status is what `main` contains. Checked on 2026-11-14 at [`5786800`](https://github.com/Dionco99/Flowcharts-OpenSource/commit/57868000ce77c36815b4c4e1496e69938d6bae57), the bootstrap commit: Apache-2.0 layout, package scaffolds, and the license check. No package implements a behavior. A README scaffold is `missing`, not `in progress`.
+Status is what `main` contains. Checked on 2026-11-14 at [`5786800`](https://github.com/Dionco99/Flowcharts-OpenSource/commit/57868000ce77c36815b4c4e1496e69938d6bae57), the bootstrap commit: Apache-2.0 layout, package scaffolds, and the license check. Rows marked `shipped` are the ones this change adds, and tests cover them. A README scaffold is `missing`, not `in progress`.
 
 | Status | Count | Use it when |
 | --- | --- | --- |
-| shipped | 0 | The behavior is on `main` and tests cover it. |
+| shipped | 20 | The behavior is on `main` and tests cover it. |
 | in progress | 0 | Part of the behavior is on `main`. |
-| missing | 67 | `main` does not do this yet. |
+| missing | 47 | `main` does not do this yet. |
 
 A pull request that lands a behavior updates that row in this file. Homes are the packages in the [README](../README.md). Screener and watchlist have no package in the bootstrap. Charting is [KLineChart](https://github.com/klinecharts/KLineChart). The study language is Flowchart Script. See [dependencies.md](dependencies.md).
 
@@ -20,37 +20,37 @@ Journal, edge, and the risk package are in the layout and are outside this compa
 
 | Gap | Reference behavior | Home | Status |
 | --- | --- | --- | --- |
-| Candles and OHLC bars | Solid, hollow, and bar styles on one symbol. | `packages/chart-tools` | missing |
-| Line and area styles | Line, step line, area, baseline, columns, and high-low. | `packages/chart-tools` | missing |
-| Heikin-Ashi | Synthetic candles from the source bars. | `packages/chart-tools` | missing |
-| Brick chart types | Renko, Kagi, line break, point and figure, and range bars. | `packages/chart-tools` | missing |
-| Price scales | Linear, logarithmic, and percentage. | `packages/chart-tools` | missing |
-| Readout | Crosshair OHLC, last price, and countdown to bar close. | `packages/chart-tools` | missing |
+| Candles and OHLC bars | Solid, hollow, and bar styles on one symbol. | `packages/chart-tools` | shipped |
+| Line and area styles | Line, step line, area, baseline, columns, and high-low. | `packages/chart-tools` | shipped |
+| Heikin-Ashi | Synthetic candles from the source bars. | `packages/chart-tools` | shipped |
+| Brick chart types | Renko, Kagi, line break, point and figure, and range bars. | `packages/chart-tools` | shipped |
+| Price scales | Linear, logarithmic, and percentage. | `packages/chart-tools` | shipped |
+| Readout | Crosshair OHLC, last price, and countdown to bar close. | `packages/chart-tools` | shipped |
 | Chart render | A window of bars drawn with the chart library. | `packages/chart-tools` | missing |
 
 ### Drawings
 
 | Gap | Reference behavior | Home | Status |
 | --- | --- | --- | --- |
-| Lines | Segment, ray, and extended line. | `packages/chart-tools` | missing |
-| Horizontal and vertical | Price lines and time lines, including rays and segments. | `packages/chart-tools` | missing |
-| Fibonacci | Retracement, extension, fan, and time zone. | `packages/chart-tools` | missing |
-| Channels | Parallel channel and pitchfork. | `packages/chart-tools` | missing |
-| Shapes | Rectangle, ellipse, triangle, and brush. | `packages/chart-tools` | missing |
-| Labels | Text, note, callout, and price label. | `packages/chart-tools` | missing |
-| Position tool | Long or short with entry, stop, target, and R. | `packages/chart-tools` | missing |
-| Drawing edits | Lock, magnet, and drawings that stay put across a seek. | `packages/chart-tools` | missing |
+| Lines | Segment, ray, and extended line. | `packages/chart-tools` | shipped |
+| Horizontal and vertical | Price lines and time lines, including rays and segments. | `packages/chart-tools` | shipped |
+| Fibonacci | Retracement, extension, fan, and time zone. | `packages/chart-tools` | shipped |
+| Channels | Parallel channel and pitchfork. | `packages/chart-tools` | shipped |
+| Shapes | Rectangle, ellipse, triangle, and brush. | `packages/chart-tools` | shipped |
+| Labels | Text, note, callout, and price label. | `packages/chart-tools` | shipped |
+| Position tool | Long or short with entry, stop, target, and R. | `packages/chart-tools` | shipped |
+| Drawing edits | Lock, magnet, and drawings that stay put across a seek. | `packages/chart-tools` | shipped |
 
 ### Indicators
 
 | Gap | Reference behavior | Home | Status |
 | --- | --- | --- | --- |
-| Moving averages | EMA, SMA, and the other common averages on the window. | `packages/chart-tools` | missing |
-| Oscillators | RSI, MACD, stochastic, and that family. | `packages/chart-tools` | missing |
-| Volatility | Bollinger bands, Keltner channels, and average true range. | `packages/chart-tools` | missing |
-| Volume | On-balance volume, VWAP, and the other volume studies. | `packages/chart-tools` | missing |
-| Session levels | Session high and low, and the previous day's high and low. | `packages/chart-tools` | missing |
-| Closed bars only | A study reads bars whose close is at or before the cursor. | `packages/chart-tools` | missing |
+| Moving averages | EMA, SMA, and the other common averages on the window. | `packages/chart-tools` | shipped |
+| Oscillators | RSI, MACD, stochastic, and that family. | `packages/chart-tools` | shipped |
+| Volatility | Bollinger bands, Keltner channels, and average true range. | `packages/chart-tools` | shipped |
+| Volume | On-balance volume, VWAP, and the other volume studies. | `packages/chart-tools` | shipped |
+| Session levels | Session high and low, and the previous day's high and low. | `packages/chart-tools` | shipped |
+| Closed bars only | A study reads bars whose close is at or before the cursor. | `packages/chart-tools` | shipped |
 
 ### Object tree
 
