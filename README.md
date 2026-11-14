@@ -26,7 +26,7 @@ Shells live in `apps/`. Libraries live in `packages/`.
 | [`packages/chart-tools`](packages/chart-tools) | Drawings, chart types, and the studies that ship with the desk. |
 | [`packages/workspace`](packages/workspace) | Panes, layouts, and crosshair sync. |
 | [`packages/multi-instrument`](packages/multi-instrument) | A second symbol, compare, and ratio. |
-| [`packages/alerts`](packages/alerts) | Alert rules on bars the cursor has reached. |
+| [`packages/alerts`](packages/alerts) | Alert rules, the local log, the screener, and watchlists. |
 
 ## Dependencies
 

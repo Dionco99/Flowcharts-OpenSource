@@ -17,4 +17,4 @@ Libraries live here. Shells live in [`apps/`](../apps).
 | [`chart-tools`](chart-tools) | Drawings, chart types, and shipped studies. |
 | [`workspace`](workspace) | Panes, layouts, and crosshair sync. |
 | [`multi-instrument`](multi-instrument) | A second symbol, compare, and ratio. |
-| [`alerts`](alerts) | Alert rules and the local alert log. |
+| [`alerts`](alerts) | Alert rules, the local log, the screener, and watchlists. |

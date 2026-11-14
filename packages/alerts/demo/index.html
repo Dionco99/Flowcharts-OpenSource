@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flowchart alerts</title>
+    <link rel="stylesheet" href="./demo.css" />
+  </head>
+  <body>
+    <header>
+      <div>
+        <p class="eyebrow">Flowchart</p>
+        <h1>Alerts, screener, and watchlist</h1>
+      </div>
+      <p class="note">Generated EURUSD and GBPUSD. Nothing on this page is sent off the machine.</p>
+    </header>
+    <section class="transport" aria-label="Cursor">
+      <div class="transport-row">
+        <button type="button" id="start">Start</button>
+        <button type="button" id="run">Run to end</button>
+        <label for="cursor">Cursor <span id="cursor-label" data-testid="cursor"></span></label>
+      </div>
+      <input id="cursor" type="range" min="0" value="0" step="1" />
+      <svg id="spark" viewBox="0 0 400 80" role="img" aria-label="EURUSD close"></svg>
+    </section>
+    <main>
+      <section>
+        <h2>Alerts</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody id="alerts"></tbody>
+        </table>
+        <h2>Local delivery</h2>
+        <ul id="outbox" data-testid="outbox"></ul>
+      </section>
+      <section>
+        <h2>Screener</h2>
+        <p class="note">Up at least 0.03% over 10 bars, and volume at least twice the prior average.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Percent</th>
+              <th>Volume ratio</th>
+            </tr>
+          </thead>
+          <tbody id="screener"></tbody>
+        </table>
+        <h2>Gainers</h2>
+        <ol id="hotlist"></ol>
+        <h2>Watchlist</h2>
+        <div class="search-row">
+          <input id="search" type="search" placeholder="Symbol, name, or venue" data-testid="search" />
+          <button type="button" id="add-symbol">Add</button>
+        </div>
+        <div id="results" data-testid="results"></div>
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Last</th>
+              <th>Change</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="quotes"></tbody>
+        </table>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
