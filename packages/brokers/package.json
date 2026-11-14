@@ -1,0 +1,22 @@
+{
+  "name": "@flowchart/brokers",
+  "version": "0.1.0",
+  "description": "Venue adapters behind the Flowchart broker port. Demo and paper hosts by default.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ccxt": "^4.5.92"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}
