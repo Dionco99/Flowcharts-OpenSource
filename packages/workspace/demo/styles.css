@@ -1,0 +1,99 @@
+:root {
+  color: #e7ecf5;
+  background: #12151c;
+  font: 15px/1.4 "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; }
+
+header, main, #stats {
+  padding: 12px 16px;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: end;
+  border-bottom: 1px solid #2a3140;
+}
+
+h1, h2, p { margin: 0; }
+
+h1 { font-size: 20px; }
+
+.mark {
+  color: #8ea0bf;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+button, select, input {
+  background: #1c2230;
+  color: inherit;
+  border: 1px solid #3a4458;
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+button { cursor: pointer; }
+
+.periods { display: flex; gap: 6px; }
+
+.periods button[aria-pressed="true"] {
+  background: #2f6fed;
+  border-color: #2f6fed;
+}
+
+#stats { color: #b7c3d9; }
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+}
+
+.chart {
+  height: 420px;
+  margin-top: 8px;
+  background: #0d1016;
+  border: 1px solid #2a3140;
+}
+
+.chart.short { height: 220px; }
+
+aside {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#tree { list-style: none; padding: 0; margin: 0; }
+
+#tree li {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+#tree .row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+
+#tree input[data-action="name"] { width: 110px; }
+
+#tree button {
+  padding: 3px 6px;
+  font-size: 12px;
+}
+
+#tree li[data-visible="false"] .row { opacity: 0.45; }
+
+#message { min-height: 1.4em; color: #ffb4c0; }
+
+label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #b7c3d9; }
+
+.check { flex-direction: row; align-items: center; }
