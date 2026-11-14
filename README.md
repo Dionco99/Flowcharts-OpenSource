@@ -27,6 +27,7 @@ Shells live in `apps/`. Libraries live in `packages/`.
 | [`packages/workspace`](packages/workspace) | Panes, layouts, and crosshair sync. |
 | [`packages/multi-instrument`](packages/multi-instrument) | A second symbol, compare, and ratio. |
 | [`packages/alerts`](packages/alerts) | Alert rules, the local log, the screener, and watchlists. |
+| [`packages/billing`](packages/billing) | Hosted-tier checkout and portal ports, and local webhook signatures. |
 
 ## Dependencies
 

@@ -31,6 +31,7 @@ Match an existing package before adding a directory. Shells a person opens live 
 | Panes and layouts | `packages/workspace` |
 | A second symbol | `packages/multi-instrument` |
 | Alert rules, the local log, the screener, and watchlists | `packages/alerts` |
+| Hosted checkout, portal, and webhook signatures | `packages/billing` |
 
 ## License header
 

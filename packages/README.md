@@ -18,3 +18,4 @@ Libraries live here. Shells live in [`apps/`](../apps).
 | [`workspace`](workspace) | Panes, layouts, and crosshair sync. |
 | [`multi-instrument`](multi-instrument) | A second symbol, compare, and ratio. |
 | [`alerts`](alerts) | Alert rules, the local log, the screener, and watchlists. |
+| [`billing`](billing) | Hosted-tier checkout and portal ports, and local webhook signatures. |

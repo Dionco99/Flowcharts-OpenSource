@@ -49,6 +49,7 @@ PACKAGES = (
     "accounts",
     "alerts",
     "bars",
+    "billing",
     "brokers",
     "chart-tools",
     "edge",
