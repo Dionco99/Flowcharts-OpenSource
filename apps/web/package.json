@@ -1,0 +1,16 @@
+{
+  "name": "@flowchart/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Self-hosted static shell for Flowchart. No runtime dependencies.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node src/server.mjs",
+    "test": "node --test"
+  }
+}
