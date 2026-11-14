@@ -1,0 +1,19 @@
+{
+  "name": "@flowchart/accounts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Local account session and sync records for Flowchart layouts and journal entries.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test test/accounts.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.3",
+    "typescript": "5.8.3"
+  }
+}

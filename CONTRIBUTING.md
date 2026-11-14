@@ -25,6 +25,7 @@ Match an existing package before adding a directory. Shells a person opens live 
 | Replay clock and session file | `packages/replay` |
 | Size, R, and account risk | `packages/risk` |
 | Trade log | `packages/journal` |
+| Local account session and sync | `packages/accounts` |
 | Expectancy from the journal | `packages/edge` |
 | Drawings, chart types, shipped studies | `packages/chart-tools` |
 | Panes and layouts | `packages/workspace` |
