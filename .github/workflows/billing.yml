@@ -1,0 +1,30 @@
+name: billing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  billing:
+    name: Billing package
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/billing
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: packages/billing/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Test
+        run: npm test
