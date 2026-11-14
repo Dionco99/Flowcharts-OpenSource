@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flowchart · Replay account</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23101410'/%3E%3Cpath d='M2 12.5 6 8.5 8.5 10.5 14 4' fill='none' stroke='%23e0c27a' stroke-width='1.4'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="title-block">
+        <p class="mark">Flowchart</p>
+        <h1>Replay account</h1>
+      </div>
+      <p class="lede">
+        Set the account before the session. Each long or short is sized so the stop, the spread,
+        and the commission cost one risk unit. The result, in R and in account currency, updates
+        the simulated balance.
+      </p>
+    </header>
+
+    <main>
+      <form id="session-form" class="panel settings">
+        <div class="settings-head">
+          <h2>Session</h2>
+          <button type="submit" id="resimulate">Resimulate</button>
+        </div>
+        <div class="fields">
+          <label>
+            Account size
+            <input id="account-size" name="accountSize" type="number" min="0" step="any" value="100000" required />
+          </label>
+          <label>
+            Risk per trade (%)
+            <input id="risk-percent" name="riskPercent" type="number" min="0" max="100" step="any" value="1" required />
+          </label>
+          <label>
+            Default RR
+            <input id="default-rr" name="defaultRR" type="number" min="0" step="any" value="2" required />
+          </label>
+          <label>
+            Commission / lot
+            <input id="commission" name="commission" type="number" min="0" step="any" value="7" required />
+          </label>
+          <label>
+            Spread (price)
+            <input id="spread" name="spread" type="number" min="0" step="any" value="0.0001" required />
+          </label>
+          <label>
+            Lot size
+            <input id="lot-size" name="lotSize" type="number" min="0" step="any" value="100000" required />
+          </label>
+          <label>
+            Lot step
+            <input id="lot-step" name="lotStep" type="number" min="0" step="any" value="0.01" required />
+          </label>
+          <label>
+            Currency
+            <input id="currency" name="currency" type="text" value="USD" maxlength="8" autocomplete="off" />
+          </label>
+        </div>
+        <p id="form-error" class="error" role="alert" hidden></p>
+      </form>
+
+      <p id="run-line" class="run-line"></p>
+      <ul id="skipped" class="skipped" hidden></ul>
+
+      <section id="stats" class="stats" aria-label="Account statistics"></section>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>Equity</h2>
+          <p id="equity-caption" class="caption"></p>
+        </div>
+        <div id="equity"></div>
+      </section>
+
+      <section class="splits">
+        <div class="panel">
+          <h2>Session</h2>
+          <div id="by-session"></div>
+        </div>
+        <div class="panel">
+          <h2>Weekday</h2>
+          <div id="by-weekday"></div>
+        </div>
+        <div class="panel">
+          <h2>Setup</h2>
+          <div id="by-setup"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>Trades</h2>
+          <p class="caption">Generated fixture. Chart prices are the bid. One row is one closed replay trade.</p>
+        </div>
+        <div id="trades" class="table-wrap"></div>
+      </section>
+
+      <details class="glossary">
+        <summary>How these numbers are defined</summary>
+        <dl>
+          <dt>1R</dt>
+          <dd>The account currency lost if the stop fills, including the spread and the round-turn commission. Lot size is floored to the lot step, so the trade risks that amount or less.</dd>
+          <dt>Average R</dt>
+          <dd>The mean realized R across closed trades. A filled stop is −1R.</dd>
+          <dt>Expectancy</dt>
+          <dd>Win rate times average winning R, minus loss rate times average losing R. The card also shows the mean currency result per trade.</dd>
+          <dt>Profit factor</dt>
+          <dd>Gross winning currency divided by gross losing currency.</dd>
+          <dt>Max drawdown</dt>
+          <dd>The largest peak-to-trough drop on the equity curve, in currency and as a share of the peak.</dd>
+          <dt>Streaks</dt>
+          <dd>The longest run of winning closes and of losing closes. A scratch resets both.</dd>
+          <dt>RR achieved and planned</dt>
+          <dd>Planned RR is the average of target distance over stop distance. Achieved RR is average winning R divided by average losing R.</dd>
+          <dt>Session, weekday, setup</dt>
+          <dd>Currency P&amp;L grouped by the trade's session label, its UTC weekday, and its setup label.</dd>
+        </dl>
+      </details>
+    </main>
+
+    <footer>
+      <p>Apache-2.0. Replay playback stays in Flowchart. This page does not bundle market data.</p>
+    </footer>
+    <script type="module" src="../dist/dashboard/main.js"></script>
+  </body>
+</html>
