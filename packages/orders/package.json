@@ -1,0 +1,22 @@
+{
+  "name": "@flowchart/orders",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Flowchart broker port and the replay fill adapter. One port is one symbol and one net position.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "node --test test/order-model.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "typescript": "^5.9.0"
+  }
+}
