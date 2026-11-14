@@ -29,7 +29,7 @@ Match an existing package before adding a directory. Shells a person opens live 
 | Drawings, chart types, shipped studies | `packages/chart-tools` |
 | Panes and layouts | `packages/workspace` |
 | A second symbol | `packages/multi-instrument` |
-| Alert rules and the local alert log | `packages/alerts` |
+| Alert rules, the local log, the screener, and watchlists | `packages/alerts` |
 
 ## License header
 
