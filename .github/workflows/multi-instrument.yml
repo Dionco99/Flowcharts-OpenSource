@@ -1,0 +1,19 @@
+name: multi-instrument
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  multi-instrument:
+    name: multi-instrument tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test
+        run: PYTHONPATH=packages/multi-instrument/src python3 -m unittest discover -s packages/multi-instrument/tests -v
