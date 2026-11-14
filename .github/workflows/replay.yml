@@ -24,4 +24,4 @@ jobs:
       - name: Install
         run: npm ci
       - name: Test and typecheck
-        run: npm test && npm run typecheck
+        run: npm test && npm test -w @flowchart/replay && npm run typecheck
