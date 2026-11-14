@@ -1,0 +1,33 @@
+name: Feature
+description: A change inside one Flowchart package
+title: "[feature] "
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: The package that should own the change.
+      options:
+        - apps/desk
+        - packages/bars
+        - packages/orders
+        - packages/brokers
+        - packages/plugins
+        - packages/script
+        - packages/replay
+        - packages/risk
+        - packages/journal
+        - packages/edge
+        - packages/chart-tools
+        - packages/workspace
+        - packages/multi-instrument
+        - packages/alerts
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What the package should do, and which contract it keeps.
+    validations:
+      required: true

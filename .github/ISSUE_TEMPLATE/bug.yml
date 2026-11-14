@@ -1,0 +1,49 @@
+name: Bug
+description: A defect in one Flowchart package
+title: "[bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Security reports go to a [private advisory](https://github.com/Dionco99/Flowcharts-OpenSource/security/advisories/new), not this form.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Where the defect lives.
+      options:
+        - apps/desk
+        - packages/bars
+        - packages/orders
+        - packages/brokers
+        - packages/plugins
+        - packages/script
+        - packages/replay
+        - packages/risk
+        - packages/journal
+        - packages/edge
+        - packages/chart-tools
+        - packages/workspace
+        - packages/multi-instrument
+        - packages/alerts
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit
+      description: The commit you ran, if you have it.
+    validations:
+      required: false
