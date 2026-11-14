@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flowchart workspace</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header>
+      <div>
+        <p class="mark">Flowchart</p>
+        <h1>Chart workspace</h1>
+      </div>
+      <div class="periods" id="periods">
+        <button type="button" data-period="1m">1m</button>
+        <button type="button" data-period="7m">7m</button>
+        <button type="button" data-period="2h">2h</button>
+        <button type="button" data-period="3D">3D</button>
+      </div>
+      <label>Candle
+        <select id="candle" data-testid="candle">
+          <option value="candle_solid">Solid</option>
+          <option value="candle_stroke">Stroke</option>
+          <option value="ohlc">OHLC</option>
+          <option value="area">Area</option>
+        </select>
+      </label>
+      <label>Scale
+        <select id="scale" data-testid="scale">
+          <option value="normal">Linear</option>
+          <option value="logarithm">Log</option>
+          <option value="percentage">Percent</option>
+        </select>
+      </label>
+      <label class="check"><input id="sync" type="checkbox" checked /> Sync crosshair</label>
+    </header>
+    <p id="stats" data-testid="stats"></p>
+    <main>
+      <section class="charts">
+        <article>
+          <h2>Price <span data-testid="cursor-price">—</span></h2>
+          <div id="chart-price" class="chart"></div>
+        </article>
+        <article>
+          <h2>Extra <span data-testid="cursor-extra">—</span></h2>
+          <div id="chart-extra" class="chart short"></div>
+        </article>
+      </section>
+      <aside>
+        <h2>Object tree</h2>
+        <ul id="tree" data-testid="tree"></ul>
+        <button type="button" id="group">Group selected</button>
+        <h2>SMA</h2>
+        <label>Length
+          <input id="sma-period" data-testid="sma-period" type="number" min="1" max="500" step="1" value="5" />
+        </label>
+        <label>Color
+          <input id="sma-color" data-testid="sma-color" type="color" value="#4C8DFF" />
+        </label>
+        <h2>Backtest hook</h2>
+        <button type="button" id="backtest">Run backtest</button>
+        <p id="backtest-summary" data-testid="backtest-summary">Not run</p>
+        <h2>Saved layouts</h2>
+        <label>Name <input id="layout-name" data-testid="layout-name" value="Desk" /></label>
+        <button type="button" id="save">Save</button>
+        <select id="saved" data-testid="saved"></select>
+        <button type="button" id="load">Load</button>
+        <p id="message" data-testid="message"></p>
+      </aside>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

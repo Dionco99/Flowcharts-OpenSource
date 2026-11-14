@@ -1,0 +1,25 @@
+{
+  "name": "@flowchart/workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "demo": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "test:browser": "tsx demo/browser-check.ts"
+  },
+  "dependencies": {
+    "klinecharts": "10.1.0"
+  },
+  "devDependencies": {
+    "puppeteer-core": "24.15.0",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3",
+    "vite": "6.3.5"
+  }
+}
