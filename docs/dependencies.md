@@ -17,6 +17,10 @@ Flowchart license: Apache-2.0.
 - vectorbt (Commons Clause).
 - nautilus_trader (LGPL, sidecar only).
 
+## Hosted billing
+
+`packages/billing` is Apache-2.0, like the rest of this repository. It does not depend on the Stripe SDK. Signature checks run in process with a secret the caller passes in. A hosted deployment that charges implements the checkout and portal ports outside this tree. The trading packages do not import `@flowchart/billing`.
+
 ## Data
 
 Do not bundle Binance Vision (CC BY-NC-SA), Dukascopy, or HistData files. Yahoo data terms apply to yfinance. Users connect their own feeds.
