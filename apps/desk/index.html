@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flowchart — Replay</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%2312110f' width='32' height='32'/%3E%3Crect x='4' y='4' width='10' height='10' fill='%23e4a85c'/%3E%3Crect x='18' y='4' width='10' height='10' fill='%231f8a68'/%3E%3Crect x='4' y='18' width='10' height='10' fill='%238fb4d4'/%3E%3Crect x='18' y='18' width='10' height='10' fill='%23b55246'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app" class="desk">
+      <header class="top">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <div>
+            <strong>Flowchart</strong>
+            <span>Replay</span>
+          </div>
+        </div>
+        <div class="symbol" id="symbol">EURUSD</div>
+        <label class="field">Step
+          <select id="step-tf" aria-label="Trading timeframe"></select>
+        </label>
+        <label class="field">Zone
+          <select id="timezone" aria-label="Timezone"></select>
+        </label>
+        <div class="studies" id="studies"></div>
+        <label class="switch"><input id="strategy" type="checkbox" /> Sample strategy</label>
+        <div class="clock" id="clock">Loading tape…</div>
+      </header>
+      <div class="body">
+        <aside class="tools" aria-label="Drawings">
+          <button type="button" data-tool="cursor" class="tool on" title="Cursor">+</button>
+          <button type="button" data-tool="level" class="tool" title="Level">―</button>
+          <button type="button" data-tool="segment" class="tool" title="Segment">╱</button>
+          <button type="button" data-tool="range" class="tool" title="Range">▢</button>
+          <button type="button" data-tool="fib" class="tool" title="Fib">φ</button>
+        </aside>
+        <div class="stage" id="panes"></div>
+        <aside class="rail">
+          <section class="card">
+            <h2>Position</h2>
+            <p class="pos" id="position">Flat</p>
+            <p class="quote" id="quote">—</p>
+          </section>
+          <section class="card">
+            <h2>Ticket</h2>
+            <div class="grid2">
+              <label>Lots <input id="lots" type="number" min="0.01" step="0.01" value="0.10" /></label>
+              <label>Type
+                <select id="order-type">
+                  <option value="market">Market</option>
+                  <option value="limit">Limit</option>
+                  <option value="stop">Stop</option>
+                </select>
+              </label>
+            </div>
+            <label class="block">Price <input id="price" inputmode="decimal" placeholder="Click the chart" disabled /></label>
+            <div class="grid2">
+              <label>Stop <input id="stop" inputmode="decimal" placeholder="Optional" /></label>
+              <label>Target <input id="target" inputmode="decimal" placeholder="Optional" /></label>
+            </div>
+            <div class="sends">
+              <button type="button" id="buy" class="buy">Buy</button>
+              <button type="button" id="sell" class="sell">Sell</button>
+            </div>
+            <div class="sends slim">
+              <button type="button" id="close" disabled>Close</button>
+              <button type="button" id="half" disabled>Close half</button>
+            </div>
+            <p class="hint" id="costs"></p>
+          </section>
+          <section class="card grow">
+            <h2>Working</h2>
+            <div id="working" class="list"></div>
+          </section>
+          <section class="card">
+            <h2>P&amp;L</h2>
+            <dl class="pnl" id="pnl"></dl>
+          </section>
+          <section class="card tape">
+            <h2>Tape <span id="ambiguous-count"></span></h2>
+            <p class="hint">A minute that trades both a stop and a target fills the stop and is marked ambiguous.</p>
+            <div id="tape" class="list"></div>
+          </section>
+        </aside>
+      </div>
+      <footer class="transport">
+        <button type="button" id="step-back" title="Step back">←</button>
+        <button type="button" id="play" class="play">Play</button>
+        <button type="button" id="step-forward" title="Step forward">→</button>
+        <label class="field">Speed
+          <select id="speed">
+            <option value="1">1×</option>
+            <option value="2" selected>2×</option>
+            <option value="4">4×</option>
+            <option value="8">8×</option>
+          </select>
+        </label>
+        <button type="button" id="follow" class="on">Follow</button>
+        <input id="slider" type="range" aria-label="Seek" />
+        <input id="seek" type="datetime-local" aria-label="Seek to time" />
+        <button type="button" id="next-session">Next session</button>
+        <button type="button" id="add-pane">Add pane</button>
+        <button type="button" id="save-session">Save session</button>
+        <button type="button" id="open-session">Open session</button>
+        <button type="button" id="open-tape">Open 1m tape</button>
+        <span class="keys">Space play · ← → step</span>
+        <span class="status" id="status"></span>
+      </footer>
+      <input id="session-file" type="file" accept="application/json,.json" hidden />
+      <input id="tape-file" type="file" accept="application/json,.json" hidden />
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

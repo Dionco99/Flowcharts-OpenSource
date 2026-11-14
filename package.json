@@ -1,0 +1,22 @@
+{
+  "name": "flowchart",
+  "private": true,
+  "license": "Apache-2.0",
+  "workspaces": [
+    "apps/desk",
+    "packages/bars",
+    "packages/orders",
+    "packages/replay",
+    "packages/chart-tools"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @flowchart/desk",
+    "test": "npm run test -w @flowchart/bars && npm run test -w @flowchart/orders",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
