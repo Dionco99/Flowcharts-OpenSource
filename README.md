@@ -13,6 +13,7 @@ Shells live in `apps/`. Libraries live in `packages/`.
 | Path | Owns |
 | --- | --- |
 | [`apps/desk`](apps/desk) | Stage-1 replay desk. |
+| [`apps/web`](apps/web) | Self-hosted static shell. Docker and Pages are in [docs/deploy.md](docs/deploy.md). |
 | [`packages/bars`](packages/bars) | Symbol spec, 1-minute tape, and higher-timeframe windows. |
 | [`packages/orders`](packages/orders) | Order, fill, and position records, and the broker port. |
 | [`packages/brokers`](packages/brokers) | Venue adapters behind that port. |

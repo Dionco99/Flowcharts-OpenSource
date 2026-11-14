@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flowchart</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <p class="mark">Flowchart</p>
+    <h1>Self-hosted shell</h1>
+    <p class="lede">This build serves static files. The replay desk stays a separate app. You bring your own market data. This shell stores no session and asks for no key.</p>
+    <dl>
+      <div>
+        <dt>Service</dt>
+        <dd>flowchart-web</dd>
+      </div>
+      <div>
+        <dt>License</dt>
+        <dd id="license">Apache-2.0</dd>
+      </div>
+      <div>
+        <dt>Mode</dt>
+        <dd id="mode">Checking</dd>
+      </div>
+      <div>
+        <dt>Health</dt>
+        <dd id="health" data-state="pending">Checking</dd>
+      </div>
+    </dl>
+    <ul>
+      <li>No broker connection.</li>
+      <li>No hosted replay session.</li>
+      <li>No market-data feed.</li>
+    </ul>
+  </main>
+  <script src="app.js" type="module"></script>
+</body>
+</html>

@@ -17,6 +17,7 @@ Match an existing package before adding a directory. Shells a person opens live 
 | Concern | Path |
 | --- | --- |
 | Replay desk shell | `apps/desk` |
+| Self-hosted web shell | `apps/web` |
 | Symbol spec, tape, and bar windows | `packages/bars` |
 | Broker port, orders, fills, positions | `packages/orders` |
 | Venue adapters | `packages/brokers` |
