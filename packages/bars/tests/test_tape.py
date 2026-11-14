@@ -87,11 +87,15 @@ class TapeTests(unittest.TestCase):
 
     def test_package_ships_no_market_data(self) -> None:
         root = Path(__file__).resolve().parents[1]
+        config = {"package.json", "package-lock.json", "tsconfig.json"}
         banned = {".csv", ".json", ".parquet"}
         found = [
             path
             for path in root.rglob("*")
-            if path.is_file() and path.suffix.lower() in banned and "node_modules" not in path.parts
+            if path.is_file()
+            and path.suffix.lower() in banned
+            and path.name not in config
+            and "node_modules" not in path.parts
         ]
         self.assertEqual(found, [])
         self.assertEqual(eurusd_spec().timezone, "America/New_York")
