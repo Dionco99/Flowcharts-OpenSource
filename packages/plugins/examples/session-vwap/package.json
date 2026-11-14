@@ -1,0 +1,8 @@
+{
+  "name": "@flowchart/plugin-session-vwap",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "description": "Example Flowchart indicator package: session-anchored VWAP."
+}
