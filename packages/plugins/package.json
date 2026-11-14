@@ -1,0 +1,28 @@
+{
+  "name": "@flowchart/plugins",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "description": "Registration for a Flowchart indicator or strategy package.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --import tsx --test test/*.test.ts examples/session-vwap/test/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p examples/session-vwap/tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
