@@ -8,6 +8,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -15,5 +16,8 @@
     "@flowchart/orders": "0.1.0",
     "indicatorts": "2.6.1",
     "klinecharts": "10.1.0"
+  },
+  "devDependencies": {
+    "vitest": "2.1.8"
   }
 }
