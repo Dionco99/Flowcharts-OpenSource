@@ -1,0 +1,17 @@
+// Copyright 2026 Dionco99
+// SPDX-License-Identifier: Apache-2.0
+
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  server: {
+    host: "127.0.0.1",
+    port: 5173,
+    strictPort: true,
+  },
+  preview: {
+    host: "127.0.0.1",
+    port: 4173,
+    strictPort: true,
+  },
+});
