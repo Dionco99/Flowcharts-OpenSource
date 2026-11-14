@@ -1,0 +1,17 @@
+script ma_cross
+param fast = 10
+param slow = 30
+param size = 1
+def fast_ma = sma(close, fast)
+def slow_ma = sma(close, slow)
+draw fast_ma label "Fast"
+draw slow_ma label "Slow"
+on crosses_above(fast_ma, slow_ma)
+  long size
+  notify "fast crossed above slow"
+end
+on crosses_below(fast_ma, slow_ma)
+  short size
+  notify "fast crossed below slow"
+end
+end
