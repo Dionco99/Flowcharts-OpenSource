@@ -13,6 +13,7 @@
     "@flowchart/orders": "0.1.0"
   },
   "scripts": {
+    "test": "tsx --test test/*.test.ts",
     "typecheck": "tsc --noEmit"
   }
 }
