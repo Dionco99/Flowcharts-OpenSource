@@ -1,0 +1,14 @@
+[project]
+name = "flowchart-bars"
+version = "0.1.0"
+description = "Symbol spec, caller-supplied tapes, and higher-timeframe windows."
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Dionco99" }]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
