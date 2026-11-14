@@ -4,7 +4,7 @@ Open-source trading platform. The first desk is market replay: you supply a 1-mi
 
 Licensed under the [Apache License, Version 2.0](LICENSE).
 
-The packages in this repository are scaffolds. Live brokerage, prop-firm rules, and Flowchart Script attach later to the same contracts. Stage 1 is one symbol.
+The replay desk is in `apps/desk`, with the bars, orders, replay, and chart-tools libraries it uses. Live brokerage, prop-firm rules, and Flowchart Script attach later to the same contracts. Stage 1 is one symbol.
 
 ## Layout
 

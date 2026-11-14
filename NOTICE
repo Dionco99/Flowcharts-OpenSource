@@ -10,4 +10,10 @@ This product includes software developed by Dionco99
 (https://github.com/Dionco99/Flowcharts-OpenSource).
 
 Third-party notices are appended below when a distributed component
-requires one. The bootstrap does not bundle third-party code.
+requires one.
+
+The desk depends on KLineChart (Apache-2.0):
+https://github.com/klinecharts/KLineChart
+
+The EMA study depends on indicatorts (MIT):
+https://github.com/cinar/indicatorts

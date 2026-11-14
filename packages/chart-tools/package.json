@@ -1,0 +1,19 @@
+{
+  "name": "@flowchart/chart-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@flowchart/bars": "0.1.0",
+    "@flowchart/orders": "0.1.0",
+    "indicatorts": "2.6.1",
+    "klinecharts": "10.1.0"
+  }
+}
