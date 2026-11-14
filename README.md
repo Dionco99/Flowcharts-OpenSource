@@ -21,6 +21,7 @@ Shells live in `apps/`. Libraries live in `packages/`.
 | [`packages/replay`](packages/replay) | Replay clock and the session file. |
 | [`packages/risk`](packages/risk) | Position size, R, and later account risk checks. |
 | [`packages/journal`](packages/journal) | Local trade log shared by replay, backtest, and live. |
+| [`packages/accounts`](packages/accounts) | Local account session and sync of layouts and journal entries. |
 | [`packages/edge`](packages/edge) | Expectancy and sample statistics from journal records. |
 | [`packages/chart-tools`](packages/chart-tools) | Drawings, chart types, and the studies that ship with the desk. |
 | [`packages/workspace`](packages/workspace) | Panes, layouts, and crosshair sync. |

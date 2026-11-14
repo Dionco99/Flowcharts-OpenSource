@@ -12,6 +12,7 @@ Libraries live here. Shells live in [`apps/`](../apps).
 | [`replay`](replay) | Replay clock and the session file. |
 | [`risk`](risk) | Position size, R, and later account risk checks. |
 | [`journal`](journal) | Local trade log. |
+| [`accounts`](accounts) | Local account session and sync of layouts and journal entries. |
 | [`edge`](edge) | Expectancy from journal records. |
 | [`chart-tools`](chart-tools) | Drawings, chart types, and shipped studies. |
 | [`workspace`](workspace) | Panes, layouts, and crosshair sync. |

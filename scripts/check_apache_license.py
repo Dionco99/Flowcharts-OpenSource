@@ -46,6 +46,7 @@ SOURCE_ROOTS = ("apps", "packages", "scripts")
 LICENSE_NAMES = {"COPYING", "COPYING.txt", "LICENSE", "LICENSE.md", "LICENSE.txt"}
 SKIP_DIRS = {".git", ".venv", "__pycache__", "coverage", "dist", "node_modules", "venv"}
 PACKAGES = (
+    "accounts",
     "alerts",
     "bars",
     "brokers",
