@@ -1,0 +1,19 @@
+{
+  "name": "flowchart-chart-tools",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "module",
+  "description": "Drawings, chart types, and studies for Flowchart. Studies call indicatorts. Chart objects target KLineChart.",
+  "scripts": {
+    "test": "node --experimental-strip-types --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "indicatorts": "2.6.1",
+    "klinecharts": "10.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.1",
+    "typescript": "5.9.3"
+  }
+}

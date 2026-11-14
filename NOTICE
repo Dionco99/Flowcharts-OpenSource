@@ -10,4 +10,15 @@ This product includes software developed by Dionco99
 (https://github.com/Dionco99/Flowcharts-OpenSource).
 
 Third-party notices are appended below when a distributed component
-requires one. The bootstrap does not bundle third-party code.
+requires one. This repository depends on those libraries. It does not
+vendor their source.
+
+KLineChart
+Copyright (c) 2019 lihu
+Licensed under the Apache License, Version 2.0.
+https://github.com/klinecharts/KLineChart
+
+indicatorts
+Copyright (c) The Indicator Authors
+Licensed under the MIT License.
+https://github.com/cinar/indicatorts
