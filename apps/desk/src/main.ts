@@ -3,10 +3,17 @@
 import { EURUSD, roundPrice, TIMEFRAMES, type Minute, type Timeframe } from "@flowchart/bars";
 import { createDesk, loadStudies, type Drawing, type DrawingKind } from "@flowchart/chart-tools";
 import { runReplay, type CancelRecord, type Fill, type OrderRecord, type OrderType, type Side } from "@flowchart/orders";
-import { downloadSession, formatAxis, formatInstant, loadSession, nextSessionOpen, parseZonedInput, readJsonFile, saveSession, stepCursor, zonedInputValue, type SessionFile, type StudySetting } from "@flowchart/replay";
+import { downloadSession, formatAxis, formatInstant, loadSession, parseZonedInput, readJsonFile, saveSession, zonedInputValue, type ReplaySession, type SessionFile, type StudySetting } from "@flowchart/replay";
+import { loadTrades, saveTrade } from "../../../packages/journal/src/store.ts";
+import maCross from "../../../packages/script/examples/ma-cross.flow?raw";
+import { DESK_VENUE, fillOnBacktest, venueRows } from "./demo-broker";
 import { formatLots, formatMoney, formatPips, formatPrice } from "./format";
+import { replayNote, visibleReplay } from "./journal-note";
+import { linkedReport } from "./linked";
 import { loadDefaultTape, parseUserTape, type LoadedTape } from "./load-tape";
+import { scriptOnClosedBars, type ScriptReport } from "./script-study";
 import { createSampleStrategy } from "./strategy";
+import { jumpTransport, keyTransport, openTransport, retargetTransport, seekTransport, stepTransport } from "./transport";
 
 const ZONES: Array<[string, string]> = [
   ["UTC", "UTC"],
@@ -37,6 +44,21 @@ type State = {
 };
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+
+function paintScript(report: ScriptReport) {
+  const readout = $("script-readout");
+  const note = $("script-note");
+  if (report.error) {
+    readout.textContent = report.error;
+    note.textContent = "Flowchart Script on bars that have closed. Intents stay off the ticket.";
+    return;
+  }
+  const plots = report.plots.map((plot) => `${plot.label} ${plot.last === null ? "—" : formatPrice(plot.last)}`).join(" · ");
+  const side = report.position === "flat" ? "flat" : `${report.position} ${formatLots(report.lots)}`;
+  readout.textContent = `${report.name} · ${plots || "no plot"} · ${report.bars} bars · ${side}`;
+  const last = report.lastAlert ? ` Last alert: ${report.lastAlert}.` : "";
+  note.textContent = `${report.orders} order intents, ${report.alerts} alerts. Intents stay off the ticket.${last}`;
+}
 
 function bounds(minutes: Minute[]) {
   return { min: minutes[0].t + 60_000, max: minutes[minutes.length - 1].t + 60_000 };
@@ -150,7 +172,10 @@ function boot() {
 
   let state!: State;
   let ready = false;
-  let timer = 0;
+  let transport: ReplaySession | null = null;
+  let raf = 0;
+  let lastFrame = 0;
+  let hostTimer = 0;
   let tapeSig = "*";
   let workSig = "*";
   let saveTimer = 0;
@@ -271,6 +296,7 @@ function boot() {
     const posLots = Number(pos.lots);
     $("position").textContent = Math.abs(posLots) < 0.005 ? "Flat" : `${posLots > 0 ? "Long" : "Short"} ${formatLots(Math.abs(posLots))} @ ${formatPrice(pos.avgPrice)}`;
     $("quote").textContent = `Bid ${formatPrice(view.bid)} · Ask ${formatPrice(view.ask)}`;
+    paintScript(scriptOnClosedBars(maCross, state.minutes, state.tradingTimeframe, state.cursor));
     const realized = Number(view.realized);
     const commission = Number(view.commission);
     const unrealized = Number(view.unrealized);
@@ -334,28 +360,123 @@ function boot() {
       }
     }
 
+    if (transport) {
+      try {
+        transport.setDrawings(state.drawings.map((drawing) => ({ ...drawing })));
+        transport.setWorkingOrders(
+          view.orders.map((order) => ({
+            id: order.id,
+            clientOrderId: order.id,
+            side: order.side,
+            type: order.type,
+            lots: order.lots,
+          })),
+        );
+        transport.setFills(
+          view.fills.map((fill) => ({
+            id: fill.id,
+            time: fill.time,
+            lots: fill.lots,
+            price: fill.price,
+            side: fill.side,
+          })),
+        );
+      } catch {
+        // The replay ticket keeps an order the session file does not store.
+      }
+    }
+    scheduleHost(view.ask);
+
     const mode = state.playing ? `Playing ${state.speed}×` : "Paused";
     const loaded = state.source === "fixture" ? "" : state.source === "generated" ? " · generated tape" : " · user tape";
     $("status").textContent = `${mode} · step ${state.tradingTimeframe}${loaded}`;
     persist([...view.fills]);
   };
 
-  const stopPlay = () => {
-    state.playing = false;
-    window.clearTimeout(timer);
-  };
-  const playLoop = () => {
-    if (!ready || !state.playing) return;
+  const bindTransport = () => {
     const { min, max } = bounds(state.minutes);
-    const next = stepCursor(state.cursor, state.tradingTimeframe, 1, min, max);
-    if (next === state.cursor) {
-      stopPlay();
-      render();
-      return;
+    transport = openTransport({
+      symbol: EURUSD.symbol,
+      firstClose: min,
+      lastClose: max,
+      cursor: state.cursor,
+      timeframe: state.tradingTimeframe,
+      speed: state.speed,
+      timeZone: state.timezone,
+    });
+    state.cursor = transport.clock.cursor;
+  };
+  const syncTransport = () => {
+    if (!transport) return;
+    state.cursor = transport.clock.cursor;
+    state.playing = transport.clock.status === "playing";
+    state.speed = transport.clock.speed;
+  };
+  const stopAdvance = () => {
+    cancelAnimationFrame(raf);
+    raf = 0;
+    lastFrame = 0;
+  };
+  const startAdvance = () => {
+    stopAdvance();
+    const tick = (now: number) => {
+      if (!transport || transport.clock.status !== "playing") return;
+      const elapsed = lastFrame === 0 ? 0 : now - lastFrame;
+      lastFrame = now;
+      const before = transport.clock.cursor;
+      if (elapsed > 0) transport.clock.advance(elapsed);
+      const moved = transport.clock.cursor !== before || transport.clock.status !== "playing";
+      syncTransport();
+      if (moved) render();
+      if (transport.clock.status === "playing") raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+  };
+  const scheduleHost = (ask: string) => {
+    window.clearTimeout(hostTimer);
+    hostTimer = window.setTimeout(() => {
+      void refreshHost(ask);
+    }, 180);
+  };
+  const refreshHost = async (ask: string) => {
+    const tail = state.minutes.filter((minute) => minute.t + 60_000 <= state.cursor).slice(-240);
+    const linked = await linkedReport(state.minutes, state.cursor, ask, []);
+    const venue = venueRows("market").find((row) => row.venue === DESK_VENUE);
+    let remote = "Hosted checkout stays optional.";
+    try {
+      const response = await fetch("/api/desk", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          cursor: state.cursor,
+          price: ask,
+          minutes: tail.map((minute) => ({ t: minute.t, o: minute.o, h: minute.h, l: minute.l, c: minute.c })),
+          timeframes: [state.tradingTimeframe, "7m"],
+        }),
+      });
+      if (response.ok) {
+        const report = (await response.json()) as {
+          accounts: { revision: number };
+          symbol: { name: string; sessions: string[]; pip: string };
+          bars: Record<string, number>;
+          billing: { implementation: string; required: boolean };
+        };
+        const sessions = report.symbol.sessions.length ? report.symbol.sessions.join(", ") : "closed";
+        remote = `${report.symbol.name} ${sessions} · pip ${report.symbol.pip} · 7m ${report.bars["7m"] ?? 0} · accounts rev ${report.accounts.revision} · ${report.billing.implementation} required ${report.billing.required}`;
+      }
+    } catch {
+      remote = "Symbol registry is unavailable.";
     }
-    state.cursor = next;
-    render();
-    timer = window.setTimeout(playLoop, 1000 / state.speed);
+    $("package-readout").textContent = `${linked.workspace} · ${linked.plugin} · risk ${linked.risk} · alerts ${linked.alerts} · edge ${linked.edge} · ${venue?.venue ?? DESK_VENUE} ${venue?.placement ?? "local"}`;
+    $("package-note").textContent = `${remote} Swap ticket closed: EURUSD has no mint, and replay does not request a quote.`;
+  };
+  const refreshJournal = async () => {
+    try {
+      const notes = visibleReplay(await loadTrades());
+      $("journal-readout").textContent = notes.length === 0 ? "No replay notes yet." : `${notes.length} replay notes`;
+    } catch {
+      $("journal-readout").textContent = "Journal stays in this browser.";
+    }
   };
 
   const place = (side: Side, reduceOnly = false, lotsOverride?: number) => {
@@ -414,10 +535,15 @@ function boot() {
   });
   stepSelect.addEventListener("change", () => {
     state.tradingTimeframe = stepSelect.value as Timeframe;
+    if (transport) retargetTransport(transport, state.tradingTimeframe, state.timezone, transport.clock.status === "playing");
+    syncTransport();
+    if (transport?.clock.status === "playing") startAdvance();
     render();
   });
   zoneSelect.addEventListener("change", () => {
     state.timezone = zoneSelect.value;
+    if (transport) retargetTransport(transport, state.tradingTimeframe, state.timezone, transport.clock.status === "playing");
+    syncTransport();
     render();
   });
   $<HTMLInputElement>("strategy").addEventListener("change", () => {
@@ -426,27 +552,29 @@ function boot() {
   });
   $<HTMLSelectElement>("speed").addEventListener("change", () => {
     state.speed = Number($<HTMLSelectElement>("speed").value);
-    if (state.playing) {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(playLoop, 1000 / state.speed);
-    }
+    transport?.clock.setSpeed(state.speed);
   });
   $<HTMLButtonElement>("play").addEventListener("click", () => {
-    state.playing = !state.playing;
-    if (state.playing) playLoop();
-    else stopPlay();
+    if (!transport) return;
+    if (transport.clock.status === "playing") transport.clock.pause();
+    else transport.clock.play();
+    syncTransport();
+    if (transport.clock.status === "playing") startAdvance();
+    else stopAdvance();
     render();
   });
   $<HTMLButtonElement>("step-forward").addEventListener("click", () => {
-    stopPlay();
-    const { min, max } = bounds(state.minutes);
-    state.cursor = stepCursor(state.cursor, state.tradingTimeframe, 1, min, max);
+    if (!transport) return;
+    stepTransport(transport, 1);
+    syncTransport();
+    stopAdvance();
     render();
   });
   $<HTMLButtonElement>("step-back").addEventListener("click", () => {
-    stopPlay();
-    const { min, max } = bounds(state.minutes);
-    state.cursor = stepCursor(state.cursor, state.tradingTimeframe, -1, min, max);
+    if (!transport) return;
+    stepTransport(transport, -1);
+    syncTransport();
+    stopAdvance();
     render();
   });
   $<HTMLButtonElement>("follow").addEventListener("click", () => {
@@ -454,21 +582,24 @@ function boot() {
     render();
   });
   $<HTMLInputElement>("slider").addEventListener("input", () => {
-    state.cursor = Number($<HTMLInputElement>("slider").value);
+    if (!transport) return;
+    seekTransport(transport, Number($<HTMLInputElement>("slider").value));
+    syncTransport();
     render();
   });
   $<HTMLInputElement>("seek").addEventListener("change", () => {
     const time = parseZonedInput($<HTMLInputElement>("seek").value, state.timezone);
-    if (Number.isFinite(time)) {
-      state.cursor = time;
-      render();
-    }
+    if (!transport || !Number.isFinite(time)) return;
+    const { min, max } = bounds(state.minutes);
+    seekTransport(transport, Math.min(max, Math.max(min, time)));
+    syncTransport();
+    render();
   });
   $<HTMLButtonElement>("next-session").addEventListener("click", () => {
-    const next = nextSessionOpen(state.cursor, EURUSD.sessions);
-    if (next === null) return;
-    const { max } = bounds(state.minutes);
-    state.cursor = Math.min(next, max);
+    if (!transport) return;
+    const name = jumpTransport(transport);
+    if (!name) return;
+    syncTransport();
     state.follow = true;
     render();
   });
@@ -516,8 +647,9 @@ function boot() {
       $("status").textContent = "That session belongs to a different tape.";
       return;
     }
-    stopPlay();
+    stopAdvance();
     state = initialState({ minutes: state.minutes, events: state.events, tapeId: state.tapeId, source: state.source }, parsed);
+    bindTransport();
     tapeSig = "*";
     workSig = "*";
     render();
@@ -531,8 +663,9 @@ function boot() {
       $("status").textContent = "Could not read that 1-minute file.";
       return;
     }
-    stopPlay();
+    stopAdvance();
     state = initialState(tape, null);
+    bindTransport();
     tapeSig = "*";
     workSig = "*";
     render();
@@ -543,16 +676,25 @@ function boot() {
     const target = event.target;
     const typing = target instanceof HTMLElement && (target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "TEXTAREA");
     if (typing) return;
-    if (event.code === "Space" && !event.repeat) {
-      event.preventDefault();
-      $<HTMLButtonElement>("play").click();
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      $<HTMLButtonElement>("step-forward").click();
-    } else if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      $<HTMLButtonElement>("step-back").click();
-    } else if (event.key === "Escape") {
+    if (transport) {
+      const result = keyTransport(transport, {
+        key: event.key,
+        code: event.code,
+        repeat: event.repeat,
+        altKey: event.altKey,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+      });
+      if (result.handled) {
+        event.preventDefault();
+        syncTransport();
+        if (transport.clock.status === "playing") startAdvance();
+        else stopAdvance();
+        render();
+        return;
+      }
+    }
+    if (event.key === "Escape") {
       state.tool = "cursor";
       desk.cancelDraw();
       render();
@@ -577,10 +719,74 @@ function boot() {
     true,
   );
 
+  $<HTMLButtonElement>("demo-fill").addEventListener("click", () => {
+    if (!ready) return;
+    const view = viewOf();
+    const lots = Number($<HTMLInputElement>("lots").value);
+    const type = $<HTMLSelectElement>("order-type").value as "market" | "limit" | "stop";
+    const price = $<HTMLInputElement>("price").value.trim();
+    void fillOnBacktest({
+      clientOrderId: `desk-${state.orderSeq}`,
+      side: "buy",
+      type,
+      lots: (lots >= 0.01 ? lots : 0.1).toFixed(2),
+      markPrice: view.ask,
+      limitPrice: type === "limit" ? price : undefined,
+      stopPrice: type === "stop" ? price : undefined,
+      now: new Date(state.cursor).toISOString(),
+    }).then((fill) => {
+      $("package-note").textContent = fill.ok
+        ? `Local ${fill.status} ${fill.price}. Not transmitted. Swap ticket stays closed.`
+        : `Local fill refused (${fill.code}). Swap ticket stays closed.`;
+    });
+  });
+  $<HTMLButtonElement>("billing-preview").addEventListener("click", () => {
+    if (!ready) return;
+    const tail = state.minutes.filter((minute) => minute.t + 60_000 <= state.cursor).slice(-30);
+    void fetch("/api/desk", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        cursor: state.cursor,
+        price: viewOf().ask,
+        minutes: tail.map((minute) => ({ t: minute.t, o: minute.o, h: minute.h, l: minute.l, c: minute.c })),
+        timeframes: ["1m"],
+        previewCheckout: true,
+      }),
+    })
+      .then((response) => response.json())
+      .then((report: { billing?: { url?: string | null; checkouts?: number } }) => {
+        const url = report.billing?.url ?? "";
+        $("package-note").textContent = url.startsWith("https://billing.invalid/")
+          ? `Optional checkout ${url}. Replay did not require it.`
+          : "Checkout preview did not run. Replay still does not require it.";
+      })
+      .catch(() => {
+        $("package-note").textContent = "Checkout preview did not run. Replay still does not require it.";
+      });
+  });
+  $<HTMLButtonElement>("journal-save").addEventListener("click", () => {
+    if (!ready) return;
+    const lots = Number(viewOf().position.lots);
+    const note = replayNote({
+      symbol: EURUSD.symbol,
+      side: lots < 0 ? "short" : "long",
+      at: new Date(state.cursor).toISOString(),
+      r: $<HTMLInputElement>("journal-r").value,
+    });
+    if ("error" in note) {
+      $("journal-readout").textContent = note.error;
+      return;
+    }
+    void saveTrade(note.trade).then(() => refreshJournal());
+  });
+
   void loadDefaultTape().then((tape) => {
     state = initialState(tape, loadSession());
+    bindTransport();
     ready = true;
     render();
+    void refreshJournal();
   });
 }
 

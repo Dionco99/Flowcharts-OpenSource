@@ -7,7 +7,8 @@
     "packages/bars",
     "packages/orders",
     "packages/replay",
-    "packages/chart-tools"
+    "packages/chart-tools",
+    "packages/script"
   ],
   "scripts": {
     "dev": "npm run dev -w @flowchart/desk",

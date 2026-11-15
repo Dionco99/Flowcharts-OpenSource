@@ -44,6 +44,27 @@
             <p class="quote" id="quote">—</p>
           </section>
           <section class="card">
+            <h2>Script</h2>
+            <p class="pos" id="script-readout">—</p>
+            <p class="hint" id="script-note">Flowchart Script on bars that have closed. Intents stay off the ticket.</p>
+          </section>
+          <section class="card">
+            <h2>Packages</h2>
+            <p class="pos" id="package-readout">—</p>
+            <p class="hint" id="package-note">Replay stays on this machine. A hosted checkout is optional.</p>
+            <div class="sends slim">
+              <button type="button" id="demo-fill">Local fill</button>
+              <button type="button" id="billing-preview">Hosted preview</button>
+            </div>
+          </section>
+          <section class="card">
+            <h2>Journal</h2>
+            <p class="pos" id="journal-readout">No replay notes yet.</p>
+            <label class="block">R <input id="journal-r" inputmode="decimal" value="1" /></label>
+            <button type="button" id="journal-save">Save replay note</button>
+            <p class="hint">The note stays in this browser. The chart is not linked in.</p>
+          </section>
+          <section class="card">
             <h2>Ticket</h2>
             <div class="grid2">
               <label>Lots <input id="lots" type="number" min="0.01" step="0.01" value="0.10" /></label>
