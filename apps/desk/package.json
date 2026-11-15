@@ -6,13 +6,15 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "test": "tsx --test test/*.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@flowchart/bars": "0.1.0",
     "@flowchart/chart-tools": "0.1.0",
     "@flowchart/orders": "0.1.0",
-    "@flowchart/replay": "0.1.0"
+    "@flowchart/replay": "0.1.0",
+    "flowchart-script": "0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
