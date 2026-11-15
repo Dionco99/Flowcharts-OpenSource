@@ -10,9 +10,42 @@
   --ink: #1a140c;
   --buy: #1f8a68;
   --sell: #b55246;
+  --glass-bg: rgba(28, 26, 23, 0.62);
+  --glass-line: rgba(243, 238, 228, 0.18);
+  --glass-shine: rgba(255, 255, 255, 0.16);
+  --glass-blur: 16px;
+  --glass-radius: 14px;
   --sans: "Segoe UI", "Helvetica Neue", sans-serif;
   --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --serif: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #f3eee6;
+    --bg-2: #fffdf8;
+    --bg-3: #e7dfd2;
+    --line: #d5cbbd;
+    --text: #1a140c;
+    --muted: #6e6256;
+    --ink: #1a140c;
+    --glass-bg: rgba(255, 252, 247, 0.66);
+    --glass-line: rgba(26, 20, 12, 0.14);
+    --glass-shine: rgba(255, 255, 255, 0.72);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-bg: var(--bg-2);
+    --glass-blur: 0px;
+    --glass-shine: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top, .switchers { transition: none; }
 }
 
 * { box-sizing: border-box; }
@@ -25,7 +58,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .desk {
   height: 100vh;
   display: grid;
-  grid-template-rows: 52px minmax(0, 1fr) 56px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
 .top, .transport {
@@ -37,8 +70,21 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
   border-color: var(--line);
   border-style: solid;
 }
-.top { border-bottom-width: 1px; }
-.transport { border-top-width: 1px; gap: 8px; }
+.top {
+  min-height: 52px;
+  height: auto;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  background:
+    linear-gradient(180deg, var(--glass-shine), transparent 46%),
+    var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--glass-radius);
+  margin: 8px 8px 0;
+  box-shadow: inset 0 1px 0 var(--glass-shine);
+  backdrop-filter: blur(var(--glass-blur));
+}
+.transport { border-top-width: 1px; gap: 8px; min-height: 56px; }
 
 .brand { display: flex; align-items: center; gap: 8px; min-width: 132px; }
 .brand strong { font-family: var(--serif); font-size: 18px; font-weight: 600; letter-spacing: 0.01em; display: block; line-height: 1; }
@@ -54,7 +100,24 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
   linear-gradient(#b55246, #b55246) 10px 10px / 8px 8px no-repeat;
 }
 
-.symbol { font-family: var(--mono); font-weight: 650; letter-spacing: 0.04em; }
+.switchers {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: var(--glass-radius);
+  background:
+    linear-gradient(180deg, var(--glass-shine), transparent 52%),
+    var(--glass-bg);
+  border: 1px solid var(--glass-line);
+  box-shadow: inset 0 1px 0 var(--glass-shine);
+  backdrop-filter: blur(var(--glass-blur));
+}
+.switchers select { font-family: var(--mono); }
 .clock { margin-left: auto; font-family: var(--mono); font-size: 14px; color: var(--amber); white-space: nowrap; }
 .field { display: flex; align-items: center; gap: 6px; color: var(--muted); }
 .field select, .block input, .grid2 input, .grid2 select, #seek, #slider {
@@ -124,11 +187,11 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .keys, .status { color: var(--muted); font-size: 12px; white-space: nowrap; }
 .status { margin-left: auto; overflow: hidden; text-overflow: ellipsis; }
 
+.stage, .chart-host { background: var(--bg); }
+
 @media (max-width: 980px) {
   .body { grid-template-columns: 46px minmax(0, 1fr); grid-template-rows: minmax(220px, 42vh) auto; }
   .rail { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); max-height: 42vh; }
-  .top { flex-wrap: wrap; height: auto; padding: 8px 12px; }
-  .desk { grid-template-rows: auto minmax(0, 1fr) auto; }
   .transport { flex-wrap: wrap; height: auto; padding: 8px; }
   .clock { margin-left: 0; }
 }

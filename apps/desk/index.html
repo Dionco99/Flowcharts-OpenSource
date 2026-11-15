@@ -17,15 +17,22 @@
             <span>Replay</span>
           </div>
         </div>
-        <div class="symbol" id="symbol">EURUSD</div>
-        <label class="field">Step
-          <select id="step-tf" aria-label="Trading timeframe"></select>
-        </label>
+        <div class="switchers">
+          <label class="field">Symbol
+            <select id="symbol-switch" aria-label="Symbol">
+              <option value="EURUSD" selected>EURUSD</option>
+            </select>
+          </label>
+          <label class="field">Step
+            <select id="step-tf" aria-label="Trading timeframe"></select>
+          </label>
+        </div>
         <label class="field">Zone
           <select id="timezone" aria-label="Timezone"></select>
         </label>
         <div class="studies" id="studies"></div>
         <label class="switch"><input id="strategy" type="checkbox" /> Sample strategy</label>
+        <label class="switch" title="Send Flowchart Script intents to the replay ticket. Backtest fills only."><input id="auto-trade" type="checkbox" /> Replay auto-trade</label>
         <div class="clock" id="clock">Loading tape…</div>
       </header>
       <div class="body">
