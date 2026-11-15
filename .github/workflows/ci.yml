@@ -30,3 +30,20 @@ jobs:
           node-version: 22
       - name: Test web shell
         run: node --test apps/web/test/server.test.mjs
+
+  quickstart:
+    name: Root quickstart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Test
+        run: npm test

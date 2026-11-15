@@ -8,6 +8,13 @@ export type ScriptPlot = {
   last: number | null;
 };
 
+export type ScriptIntent = {
+  /** Bar open, UTC milliseconds. */
+  time: number;
+  side: "long" | "short" | "flat";
+  lots: number;
+};
+
 export type ScriptReport = {
   name: string;
   bars: number;
@@ -17,6 +24,7 @@ export type ScriptReport = {
   alerts: number;
   lastAlert: string | null;
   orders: number;
+  intents: ScriptIntent[];
   error: string | null;
 };
 
@@ -42,9 +50,20 @@ export function closedScriptBars(minutes: readonly Minute[], timeframe: Timefram
     }));
 }
 
+function intentsOf(orders: { time?: string; side: "long" | "short" | "flat"; lots: number }[]): ScriptIntent[] {
+  const intents: ScriptIntent[] = [];
+  for (const order of orders) {
+    if (!order.time) continue;
+    const time = Date.parse(order.time);
+    if (!Number.isFinite(time)) continue;
+    intents.push({ time, side: order.side, lots: order.lots });
+  }
+  return intents;
+}
+
 /**
  * Run a Flowchart Script over the sealed window.
- * The result's orders are intents. This function does not call the broker port.
+ * The result's orders are intents. This function does not call a broker.
  */
 export function scriptOnClosedBars(
   source: string,
@@ -64,6 +83,7 @@ export function scriptOnClosedBars(
       alerts: result.alerts.length,
       lastAlert: result.alerts.at(-1)?.message ?? null,
       orders: result.orders.length,
+      intents: intentsOf(result.orders),
       error: null,
     };
   } catch (error) {
@@ -77,6 +97,7 @@ export function scriptOnClosedBars(
       alerts: 0,
       lastAlert: null,
       orders: 0,
+      intents: [],
       error: message,
     };
   }

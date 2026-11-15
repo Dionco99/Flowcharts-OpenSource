@@ -2,10 +2,11 @@
 
 import { EURUSD, roundPrice, TIMEFRAMES, type Minute, type Timeframe } from "@flowchart/bars";
 import { createDesk, loadStudies, type Drawing, type DrawingKind } from "@flowchart/chart-tools";
-import { runReplay, type CancelRecord, type Fill, type OrderRecord, type OrderType, type Side } from "@flowchart/orders";
+import { runReplay, type CancelRecord, type Fill, type OrderRecord, type OrderType, type Side, type StrategyRunner } from "@flowchart/orders";
 import { downloadSession, formatAxis, formatInstant, loadSession, parseZonedInput, readJsonFile, saveSession, zonedInputValue, type ReplaySession, type SessionFile, type StudySetting } from "@flowchart/replay";
 import { loadTrades, saveTrade } from "../../../packages/journal/src/store.ts";
 import maCross from "../../../packages/script/examples/ma-cross.flow?raw";
+import { replayScriptStrategy } from "./auto-trade";
 import { DESK_VENUE, fillOnBacktest, venueRows } from "./demo-broker";
 import { formatLots, formatMoney, formatPips, formatPrice } from "./format";
 import { replayNote, visibleReplay } from "./journal-note";
@@ -36,6 +37,7 @@ type State = {
   panes: { id: string; timeframe: Timeframe }[];
   studies: StudySetting[];
   strategy: boolean;
+  autoTrade: boolean;
   drawings: Drawing[];
   orders: OrderRecord[];
   cancels: CancelRecord[];
@@ -45,7 +47,7 @@ type State = {
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
-function paintScript(report: ScriptReport) {
+function paintScript(report: ScriptReport, autoTrade: boolean) {
   const readout = $("script-readout");
   const note = $("script-note");
   if (report.error) {
@@ -57,7 +59,25 @@ function paintScript(report: ScriptReport) {
   const side = report.position === "flat" ? "flat" : `${report.position} ${formatLots(report.lots)}`;
   readout.textContent = `${report.name} · ${plots || "no plot"} · ${report.bars} bars · ${side}`;
   const last = report.lastAlert ? ` Last alert: ${report.lastAlert}.` : "";
-  note.textContent = `${report.orders} order intents, ${report.alerts} alerts. Intents stay off the ticket.${last}`;
+  const ticket = autoTrade ? "Intents go to the replay ticket as backtest fills." : "Intents stay off the ticket.";
+  note.textContent = `${report.orders} order intents, ${report.alerts} alerts. ${ticket}${last}`;
+}
+
+function deskStrategy(report: ScriptReport, strategy: boolean, autoTrade: boolean): StrategyRunner | null {
+  const parts: StrategyRunner[] = [];
+  if (strategy) parts.push(createSampleStrategy(EURUSD));
+  const script = replayScriptStrategy(autoTrade, report.intents);
+  if (script) parts.push(script);
+  if (parts.length === 0) return null;
+  if (parts.length === 1) return parts[0];
+  return {
+    reset() {
+      for (const part of parts) part.reset();
+    },
+    onBar(window, port) {
+      for (const part of parts) part.onBar(window, port);
+    },
+  };
 }
 
 function bounds(minutes: Minute[]) {
@@ -97,6 +117,7 @@ function initialState(tape: LoadedTape, saved: SessionFile | null): State {
     panes: [{ id: "p1", timeframe: "5m" }],
     studies: freshStudies(),
     strategy: false,
+    autoTrade: false,
     drawings: [],
     orders: [],
     cancels: [],
@@ -214,16 +235,19 @@ function boot() {
     },
   }, formatAxis);
 
-  const viewOf = () =>
-    runReplay({
+  let scriptReport: ScriptReport | null = null;
+  const viewOf = () => {
+    scriptReport = scriptOnClosedBars(maCross, state.minutes, state.tradingTimeframe, state.cursor);
+    return runReplay({
       minutes: state.minutes,
       cursor: state.cursor,
       spec: EURUSD,
       tradingTimeframe: state.tradingTimeframe,
       orders: state.orders,
       cancels: state.cancels,
-      strategy: state.strategy ? createSampleStrategy(EURUSD) : null,
+      strategy: deskStrategy(scriptReport, state.strategy, state.autoTrade),
     });
+  };
 
   const persist = (fills: Fill[]) => {
     const file: SessionFile = {
@@ -268,6 +292,7 @@ function boot() {
     stepSelect.value = state.tradingTimeframe;
     zoneSelect.value = state.timezone;
     $<HTMLInputElement>("strategy").checked = state.strategy;
+    $<HTMLInputElement>("auto-trade").checked = state.autoTrade;
     $<HTMLSelectElement>("speed").value = String(state.speed);
     $<HTMLButtonElement>("follow").classList.toggle("on", state.follow);
     $<HTMLButtonElement>("play").textContent = state.playing ? "Pause" : "Play";
@@ -296,7 +321,7 @@ function boot() {
     const posLots = Number(pos.lots);
     $("position").textContent = Math.abs(posLots) < 0.005 ? "Flat" : `${posLots > 0 ? "Long" : "Short"} ${formatLots(Math.abs(posLots))} @ ${formatPrice(pos.avgPrice)}`;
     $("quote").textContent = `Bid ${formatPrice(view.bid)} · Ask ${formatPrice(view.ask)}`;
-    paintScript(scriptOnClosedBars(maCross, state.minutes, state.tradingTimeframe, state.cursor));
+    if (scriptReport) paintScript(scriptReport, state.autoTrade);
     const realized = Number(view.realized);
     const commission = Number(view.commission);
     const unrealized = Number(view.unrealized);
@@ -548,6 +573,10 @@ function boot() {
   });
   $<HTMLInputElement>("strategy").addEventListener("change", () => {
     state.strategy = $<HTMLInputElement>("strategy").checked;
+    render();
+  });
+  $<HTMLInputElement>("auto-trade").addEventListener("change", () => {
+    state.autoTrade = $<HTMLInputElement>("auto-trade").checked;
     render();
   });
   $<HTMLSelectElement>("speed").addEventListener("change", () => {

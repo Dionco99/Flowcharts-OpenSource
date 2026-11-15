@@ -4,7 +4,18 @@ Open-source trading platform. The first desk is market replay: you supply a 1-mi
 
 Licensed under the [Apache License, Version 2.0](LICENSE).
 
-The replay desk is in `apps/desk`. It uses the merged libraries on `main`, runs Flowchart Script on bars the cursor has reached, and leaves the swap ticket closed for EURUSD. Live brokerage and a non-custodial swap attach later. Stage 1 is one symbol.
+The replay desk is in `apps/desk`. It uses the merged libraries on `main`, runs Flowchart Script on bars the cursor has reached, and leaves the swap ticket closed for EURUSD. Live brokerage and a non-custodial swap attach later. Stage 1 is one symbol. Replay auto-trade stays off. When it is on, Flowchart Script intents fill on the replay ticket only.
+
+## Quickstart
+
+```bash
+npm install
+npm run dev
+npm test
+docker compose up --build
+```
+
+`npm run dev` serves the replay desk at http://127.0.0.1:5173. `npm test` runs the bar and order libraries. `docker compose up --build` builds the desk and serves it at that same address. Stop the dev server first; both listen on port 5173.
 
 ## Layout
 
